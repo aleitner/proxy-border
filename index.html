@@ -1,0 +1,484 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proxy Buffer: add print borders to card images</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --ink:#e8eaed; --muted:#9aa3b2; --accent:#6ea8fe; --accent2:#4b7bec;
+    --good:#39c06a; --warn:#e0a53a; --bad:#e5544b;
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent)}
+  header{padding:26px 22px 10px;max-width:1200px;margin:0 auto}
+  h1{margin:0 0 4px;font-size:22px;letter-spacing:.2px}
+  .sub{color:var(--muted);font-size:14px;margin:0}
+  main{max-width:1200px;margin:0 auto;padding:14px 22px 60px;display:grid;grid-template-columns:320px 1fr;gap:22px}
+  @media(max-width:860px){main{grid-template-columns:1fr}}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+  .panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 12px}
+
+  /* controls */
+  .field{margin-bottom:16px}
+  .field:last-child{margin-bottom:0}
+  label.row{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
+  .field > .cap{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:6px 10px;border-radius:999px;font-size:13px;cursor:pointer;user-select:none}
+  .chip.active{background:var(--accent2);border-color:var(--accent2);color:#fff}
+  input[type=number]{width:88px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:7px 9px;font:inherit}
+  input[type=text]{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:7px 9px;font:inherit}
+  select{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:7px 9px;font:inherit;width:100%}
+  input[type=color]{width:34px;height:30px;padding:0;border:1px solid var(--line);border-radius:6px;background:var(--panel2)}
+  .switch{position:relative;width:40px;height:23px;flex:0 0 auto}
+  .switch input{opacity:0;width:0;height:0}
+  .slider{position:absolute;inset:0;background:var(--panel2);border:1px solid var(--line);border-radius:999px;transition:.15s}
+  .slider:before{content:"";position:absolute;width:17px;height:17px;left:2px;top:2px;background:#8a93a3;border-radius:50%;transition:.15s}
+  .switch input:checked + .slider{background:var(--accent2);border-color:var(--accent2)}
+  .switch input:checked + .slider:before{transform:translateX(17px);background:#fff}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:10px 14px;border-radius:9px;font:inherit;cursor:pointer}
+  .btn:hover{border-color:var(--accent)}
+  .btn.primary{background:var(--accent2);border-color:var(--accent2);color:#fff}
+  .btn.primary:hover{background:#5a86e8}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap}
+
+  /* drop zone */
+  #drop{
+    border:2px dashed var(--line);border-radius:var(--radius);
+    padding:34px 20px;text-align:center;color:var(--muted);
+    transition:.15s;cursor:pointer;background:var(--panel)
+  }
+  #drop.hot{border-color:var(--accent);background:#141b2b;color:var(--ink)}
+  #drop strong{color:var(--ink)}
+  .kbd{font:12px ui-monospace,Menlo,Consolas,monospace;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+
+  /* gallery */
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 12px;flex-wrap:wrap}
+  .count{color:var(--muted);font-size:13px}
+  #gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+  .thumbwrap{background:
+     repeating-conic-gradient(#20242e 0% 25%, #262b36 0% 50%) 50% / 20px 20px;
+     display:flex;align-items:center;justify-content:center;padding:14px;min-height:150px}
+  .thumbwrap canvas{max-width:100%;height:auto;max-height:280px;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+  .meta{padding:11px 12px;font-size:12.5px;display:flex;flex-direction:column;gap:7px}
+  .fname{color:var(--ink);font-weight:600;word-break:break-word;font-size:13px}
+  .stat{display:flex;justify-content:space-between;color:var(--muted)}
+  .stat b{color:var(--ink);font-weight:600}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid transparent;width:fit-content}
+  .badge.good{color:var(--good);border-color:#1f5a37;background:#12261a}
+  .badge.warn{color:var(--warn);border-color:#5a4a1f;background:#261f12}
+  .badge.bad{color:var(--bad);border-color:#5a2422;background:#261414}
+  .cardbtns{display:flex;gap:8px;padding:0 12px 12px}
+  .cardbtns .btn{flex:1;padding:7px;font-size:12.5px}
+  .x{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;border-radius:6px}
+  .x:hover{color:var(--bad);background:var(--panel2)}
+
+  details.info{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:4px 16px}
+  details.info summary{cursor:pointer;padding:12px 0;color:var(--muted);font-size:13px;list-style:none}
+  details.info summary::-webkit-details-marker{display:none}
+  details.info[open] summary{color:var(--ink)}
+  details.info p{color:var(--muted);font-size:13.5px}
+  details.info b{color:var(--ink)}
+  .empty{color:var(--muted);text-align:center;padding:40px;font-size:14px}
+  footer{max-width:1200px;margin:0 auto;padding:0 22px 40px;color:var(--muted);font-size:12.5px}
+</style>
+
+<header>
+  <h1>🖨️ Proxy Buffer</h1>
+  <p class="sub">Drop card images, add a 1/8&quot; black buffer border for proxy printing, download. Everything runs in your browser, nothing is uploaded.</p>
+</header>
+
+<main>
+  <!-- ===== controls ===== -->
+  <aside class="panel" id="controls">
+    <h2>Border settings</h2>
+
+    <div class="field">
+      <label class="row">
+        <span>Add buffer border</span>
+        <span class="switch"><input type="checkbox" id="borderOn" checked><span class="slider"></span></span>
+      </label>
+      <div class="hint">A solid border printed around the card so slight miscuts land on the border, not the art.</div>
+    </div>
+
+    <div class="field" id="thicknessField">
+      <span class="cap">Border thickness (per side)</span>
+      <div class="chips" id="thickChips">
+        <span class="chip" data-in="0.0625">1/16&quot;</span>
+        <span class="chip active" data-in="0.125">1/8&quot;</span>
+        <span class="chip" data-in="0.1875">3/16&quot;</span>
+        <span class="chip" data-in="0.25">1/4&quot;</span>
+      </div>
+      <div style="margin-top:9px;display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--muted)">Custom</span>
+        <input type="number" id="thickCustom" min="0" max="1" step="0.005" value="0.125">
+        <select id="thickUnit" style="width:auto">
+          <option value="in">inch</option>
+          <option value="mm">mm</option>
+        </select>
+      </div>
+      <div class="hint" id="thickHint"></div>
+    </div>
+
+    <div class="field" id="colorField">
+      <span class="cap">Border color</span>
+      <div class="chips">
+        <span class="chip active" data-color="#000000">Black</span>
+        <span class="chip" data-color="#ffffff">White</span>
+        <span class="chip" data-color="custom">Custom</span>
+        <input type="color" id="colorPick" value="#000000">
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="cap">Card size (for the resolution &amp; shape check)</span>
+      <select id="cardSize">
+        <option value="2.5x3.5">Standard, 2.5 × 3.5 in (63 × 88 mm)</option>
+        <option value="2.48x3.46">MTG exact, 63 × 88 mm</option>
+        <option value="2.5x3.5b">Bridge / Yu-Gi-Oh! feel, 2.5 × 3.5 in</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <span class="cap">Download format</span>
+      <div class="chips" id="fmtChips">
+        <span class="chip active" data-fmt="png">PNG (lossless)</span>
+        <span class="chip" data-fmt="jpg">JPG (smaller)</span>
+      </div>
+      <div class="hint">PNG is lossless and recommended for print. JPG re-compresses and can soften fine text.</div>
+    </div>
+  </aside>
+
+  <!-- ===== workspace ===== -->
+  <section>
+    <div id="drop">
+      <p style="margin:0 0 6px;font-size:16px"><strong>Drag &amp; drop card images here</strong></p>
+      <p style="margin:0">or <span style="color:var(--accent)">click to browse</span> · or paste from clipboard <span class="kbd">Ctrl</span>+<span class="kbd">V</span></p>
+      <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    </div>
+
+    <div class="toolbar">
+      <div class="count" id="count">No images yet</div>
+      <div class="btnrow">
+        <button class="btn" id="clearBtn" disabled>Clear all</button>
+        <button class="btn primary" id="zipBtn" disabled>⬇ Download all (.zip)</button>
+      </div>
+    </div>
+
+    <div id="gallery"></div>
+    <div class="empty" id="emptyMsg">Your bordered cards will show up here.</div>
+
+    <details class="info">
+      <summary>ℹ️ Why a 1/8&quot; black border? (and the numbers this tool uses)</summary>
+      <p>Card cutters (guillotines, print shops, or your own hand with a blade) are never perfectly aligned. A solid <b>1/8&quot; (0.125&quot;) buffer</b> on every side means a slightly-off cut trims into the border instead of leaving a white sliver or slicing the art. Real Magic cards are black-bordered, so a miscut into black is invisible.</p>
+      <p><b>Sizes:</b> a card trims to <b>2.5 × 3.5 in</b> (63 × 88 mm), which is <b>750 × 1050 px at 300 DPI</b>, the practical minimum for a crisp print. Add a 1/8&quot; border on each side and the file becomes <b>2.75 × 3.75 in = 825 × 1125 px</b>. This tool sizes the border as a true 1/8&quot; relative to your image, so it stays correct whatever resolution you feed it.</p>
+      <p><b>Resolution:</b> under ~200 DPI (roughly below 500 px wide) prints blurry; 300 DPI is the baseline; 600 DPI (1500 × 2100) is excellent. Upscaling a small image doesn't add real detail.</p>
+      <p style="font-size:12.5px">Sources: <a href="https://cultureofgaming.com/mtg-proxy-dimensions-guide-exact-card-size-bleed-borders-and-why-is-this-cropped/" target="_blank" rel="noopener">Culture of Gaming</a>, <a href="https://proxyfoundry.com/mtg-proxy-cards-image-dpi-and-resolution-guide-bleed-safe-zones-and-files-that-actually-print/" target="_blank" rel="noopener">Proxy Foundry</a>. Card Conjurer (a full card <i>generator</i>) lives on at <a href="https://github.com/Investigamer/cardconjurer" target="_blank" rel="noopener">github.com/Investigamer/cardconjurer</a>.</p>
+    </details>
+  </section>
+</main>
+
+<footer>
+  Proxy Buffer · runs entirely client-side · <span id="ver"></span>
+</footer>
+
+<script>
+"use strict";
+
+/* ---------------- state ---------------- */
+const S = {
+  borderOn: true,
+  borderIn: 0.125,      // inches per side
+  color: "#000000",
+  cardW: 2.5, cardH: 3.5,
+  fmt: "png"
+};
+let items = [];        // {id, name, img, w, h}
+let seq = 0;
+
+/* ---------------- helpers ---------------- */
+const $ = s => document.querySelector(s);
+const gallery = $("#gallery");
+const targetAR = () => S.cardW / S.cardH;
+
+function effDpi(w, h){ return Math.min(w / S.cardW, h / S.cardH); }
+
+// pixels-per-inch of the source image, based on card width
+function ppi(w){ return w / S.cardW; }
+
+function fmtNum(n){ return (Math.round(n*100)/100).toString(); }
+
+/* build the full-resolution bordered canvas for one item */
+function renderCanvas(it){
+  const w = it.w, h = it.h;
+  const border = S.borderOn ? Math.round(S.borderIn * ppi(w)) : 0;
+  const cw = w + border*2, ch = h + border*2;
+  const c = document.createElement("canvas");
+  c.width = cw; c.height = ch;
+  const ctx = c.getContext("2d");
+
+  // border fill
+  if (S.borderOn){
+    ctx.fillStyle = S.color;
+    ctx.fillRect(0,0,cw,ch);
+  }
+  // the card image, unchanged. Only the border is added around it
+  ctx.drawImage(it.img, border, border, w, h);
+
+  return {canvas:c, border, cw, ch};
+}
+
+/* resolution + shape assessment for one item */
+function assess(it){
+  const dpi = Math.round(effDpi(it.w, it.h));
+  let res;
+  if (dpi < 200)      res = {cls:"bad",  txt:`${dpi} DPI · too low, will look blurry`};
+  else if (dpi < 300) res = {cls:"warn", txt:`${dpi} DPI · soft, 300+ recommended`};
+  else if (dpi < 600) res = {cls:"good", txt:`${dpi} DPI · good for print`};
+  else                res = {cls:"good", txt:`${dpi} DPI · excellent`};
+
+  const ar = it.w / it.h;
+  const diff = Math.abs(ar - targetAR()) / targetAR();
+  let shape = null;
+  if (ar > 1)              shape = {cls:"warn", txt:"Landscape · card may be sideways"};
+  else if (diff > 0.06)    shape = {cls:"warn", txt:`Off card shape (${ar.toFixed(3)} vs ${targetAR().toFixed(3)})`};
+  return {res, shape};
+}
+
+/* ---------------- rendering the gallery ---------------- */
+function draw(){
+  gallery.innerHTML = "";
+  for (const it of items){
+    const {canvas, cw, ch} = renderCanvas(it);
+    const {res, shape} = assess(it);
+
+    const el = document.createElement("div");
+    el.className = "card";
+
+    const tw = document.createElement("div");
+    tw.className = "thumbwrap";
+    tw.appendChild(canvas);
+    el.appendChild(tw);
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    const outNote = S.borderOn ? `<span class="stat"><span>Output</span><b>${cw} × ${ch}px</b></span>` : "";
+    meta.innerHTML =
+      `<div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
+         <span class="fname">${escapeHtml(it.name)}</span>
+         <button class="x" title="Remove" data-id="${it.id}">×</button>
+       </div>
+       <span class="stat"><span>Source</span><b>${it.w} × ${it.h}px</b></span>
+       ${outNote}
+       <span class="badge ${res.cls}">${dot(res.cls)} ${res.txt}</span>
+       ${shape ? `<span class="badge ${shape.cls}">${dot(shape.cls)} ${shape.txt}</span>` : ""}`;
+    el.appendChild(meta);
+
+    const btns = document.createElement("div");
+    btns.className = "cardbtns";
+    const dl = document.createElement("button");
+    dl.className = "btn"; dl.textContent = "⬇ Download";
+    dl.onclick = () => downloadOne(it);
+    btns.appendChild(dl);
+    el.appendChild(btns);
+
+    el.querySelector(".x").onclick = e => removeItem(e.target.dataset.id);
+    gallery.appendChild(el);
+  }
+  $("#emptyMsg").style.display = items.length ? "none" : "block";
+  const n = items.length;
+  $("#count").textContent = n ? `${n} image${n>1?"s":""}` : "No images yet";
+  $("#zipBtn").disabled = !n;
+  $("#clearBtn").disabled = !n;
+}
+
+function dot(cls){
+  const c = cls==="good" ? "var(--good)" : cls==="warn" ? "var(--warn)" : "var(--bad)";
+  return `<span style="width:7px;height:7px;border-radius:50%;background:${c};display:inline-block"></span>`;
+}
+function escapeHtml(s){ return s.replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m])); }
+
+/* ---------------- files in ---------------- */
+function addFiles(fileList){
+  const files = [...fileList].filter(f => f.type.startsWith("image/"));
+  let pending = files.length;
+  if (!pending) return;
+  for (const f of files){
+    const img = new Image();
+    const url = URL.createObjectURL(f);
+    img.onload = () => {
+      items.push({ id:"i"+(seq++), name:f.name || "pasted.png", img, w:img.naturalWidth, h:img.naturalHeight });
+      URL.revokeObjectURL(url);
+      if (--pending === 0) draw();
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); if (--pending === 0) draw(); };
+    img.src = url;
+  }
+}
+function removeItem(id){ items = items.filter(i => i.id !== id); draw(); }
+
+/* ---------------- downloads ---------------- */
+function outName(name){
+  const base = name.replace(/\.[^.]+$/, "");
+  return base + "-buffer." + (S.fmt === "png" ? "png" : "jpg");
+}
+function mime(){ return S.fmt === "png" ? "image/png" : "image/jpeg"; }
+
+function canvasToBlob(canvas){
+  return new Promise(res => canvas.toBlob(res, mime(), 0.95));
+}
+async function downloadOne(it){
+  const {canvas} = renderCanvas(it);
+  const blob = await canvasToBlob(canvas);
+  saveBlob(blob, outName(it.name));
+}
+function saveBlob(blob, filename){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+async function downloadZip(){
+  const btn = $("#zipBtn");
+  btn.disabled = true; const label = btn.textContent; btn.textContent = "Zipping…";
+  const entries = [];
+  const used = {};
+  for (const it of items){
+    const {canvas} = renderCanvas(it);
+    const blob = await canvasToBlob(canvas);
+    const buf = new Uint8Array(await blob.arrayBuffer());
+    let nm = outName(it.name);
+    if (used[nm]){ used[nm]++; nm = nm.replace(/(\.[^.]+)$/, `-${used[nm]}$1`); } else used[nm] = 1;
+    entries.push({ name:nm, data:buf });
+  }
+  const zip = buildZip(entries);
+  saveBlob(new Blob([zip], {type:"application/zip"}), "proxy-buffered-cards.zip");
+  btn.textContent = label; btn.disabled = false;
+}
+
+/* ---------------- minimal store-only ZIP (no dependencies) ---------------- */
+const CRC = (() => {
+  const t = new Uint32Array(256);
+  for (let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = (c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; }
+  return t;
+})();
+function crc32(u8){
+  let c = 0xFFFFFFFF;
+  for (let i=0;i<u8.length;i++) c = (c>>>8) ^ CRC[(c ^ u8[i]) & 0xFF];
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function buildZip(entries){
+  const enc = new TextEncoder();
+  const parts = []; let offset = 0;
+  const push = a => { parts.push(a); offset += a.length; };
+  const u16 = n => new Uint8Array([n&255,(n>>8)&255]);
+  const u32 = n => new Uint8Array([n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]);
+  const records = [];
+  for (const e of entries){
+    const name = enc.encode(e.name);
+    const crc = crc32(e.data);
+    const at = offset;
+    push(u32(0x04034b50)); push(u16(20)); push(u16(0)); push(u16(0));
+    push(u16(0)); push(u16(0));                 // time, date
+    push(u32(crc)); push(u32(e.data.length)); push(u32(e.data.length));
+    push(u16(name.length)); push(u16(0)); push(name);
+    push(e.data);
+    records.push({name, crc, size:e.data.length, at});
+  }
+  const cdStart = offset;
+  for (const r of records){
+    push(u32(0x02014b50)); push(u16(20)); push(u16(20)); push(u16(0)); push(u16(0));
+    push(u16(0)); push(u16(0));
+    push(u32(r.crc)); push(u32(r.size)); push(u32(r.size));
+    push(u16(r.name.length)); push(u16(0)); push(u16(0)); push(u16(0)); push(u16(0));
+    push(u32(0)); push(u32(r.at)); push(r.name);
+  }
+  const cdSize = offset - cdStart;
+  push(u32(0x06054b50)); push(u16(0)); push(u16(0));
+  push(u16(records.length)); push(u16(records.length));
+  push(u32(cdSize)); push(u32(cdStart)); push(u16(0));
+
+  const out = new Uint8Array(offset); let o = 0;
+  for (const p of parts){ out.set(p, o); o += p.length; }
+  return out;
+}
+
+/* ---------------- wire up UI ---------------- */
+const drop = $("#drop"), fileInput = $("#fileInput");
+drop.onclick = () => fileInput.click();
+fileInput.onchange = () => { addFiles(fileInput.files); fileInput.value = ""; };
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("hot"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); if (ev==="drop"||e.target===drop) drop.classList.remove("hot"); }));
+drop.addEventListener("drop", e => { if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); });
+window.addEventListener("paste", e => { if (e.clipboardData?.files?.length) addFiles(e.clipboardData.files); });
+// allow dropping anywhere on the page too
+window.addEventListener("dragover", e => e.preventDefault());
+window.addEventListener("drop", e => { e.preventDefault(); if (e.target!==drop && e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); });
+
+$("#borderOn").onchange = e => { S.borderOn = e.target.checked; $("#thicknessField").style.opacity = S.borderOn?1:.4; $("#colorField").style.opacity = S.borderOn?1:.4; draw(); };
+
+function setChips(container, fn){
+  container.querySelectorAll(".chip").forEach(ch => ch.onclick = () => {
+    container.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    ch.classList.add("active"); fn(ch); draw();
+  });
+}
+setChips($("#thickChips"), ch => {
+  S.borderIn = parseFloat(ch.dataset.in);
+  $("#thickUnit").value = "in";
+  $("#thickCustom").value = S.borderIn;
+  updateThickHint();
+});
+$("#thickCustom").oninput = () => {
+  let v = parseFloat($("#thickCustom").value) || 0;
+  if ($("#thickUnit").value === "mm") v = v / 25.4;
+  S.borderIn = v;
+  $("#thickChips").querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+  updateThickHint(); draw();
+};
+$("#thickUnit").onchange = () => { $("#thickCustom").value = $("#thickUnit").value==="mm" ? fmtNum(S.borderIn*25.4) : fmtNum(S.borderIn); updateThickHint(); };
+function updateThickHint(){
+  const px300 = Math.round(S.borderIn * 300);
+  $("#thickHint").textContent = `${fmtNum(S.borderIn)}″ (${fmtNum(S.borderIn*25.4)} mm) ≈ ${px300}px per side at 300 DPI`;
+}
+
+$("#colorField").querySelectorAll(".chip").forEach(ch => ch.onclick = () => {
+  $("#colorField").querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+  ch.classList.add("active");
+  if (ch.dataset.color === "custom"){ S.color = $("#colorPick").value; }
+  else { S.color = ch.dataset.color; $("#colorPick").value = ch.dataset.color; }
+  draw();
+});
+$("#colorPick").oninput = () => {
+  S.color = $("#colorPick").value;
+  $("#colorField").querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.color==="custom"));
+  draw();
+};
+
+$("#cardSize").onchange = e => {
+  const map = { "2.5x3.5":[2.5,3.5], "2.48x3.46":[63/25.4,88/25.4], "2.5x3.5b":[2.5,3.5] };
+  [S.cardW, S.cardH] = map[e.target.value];
+  draw();
+};
+
+setChips($("#fmtChips"), ch => S.fmt = ch.dataset.fmt);
+
+$("#zipBtn").onclick = downloadZip;
+$("#clearBtn").onclick = () => { items = []; draw(); };
+
+updateThickHint();
+$("#ver").textContent = "v1.0";
+draw();
+</script>
