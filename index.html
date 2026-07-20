@@ -108,26 +108,7 @@
         <span>Add buffer border</span>
         <span class="switch"><input type="checkbox" id="borderOn" checked><span class="slider"></span></span>
       </label>
-      <div class="hint">A solid border printed around the card so slight miscuts land on the border, not the art.</div>
-    </div>
-
-    <div class="field" id="thicknessField">
-      <span class="cap">Border thickness (per side)</span>
-      <div class="chips" id="thickChips">
-        <span class="chip" data-in="0.0625">1/16&quot;</span>
-        <span class="chip active" data-in="0.125">1/8&quot;</span>
-        <span class="chip" data-in="0.1875">3/16&quot;</span>
-        <span class="chip" data-in="0.25">1/4&quot;</span>
-      </div>
-      <div style="margin-top:9px;display:flex;align-items:center;gap:8px">
-        <span style="font-size:12px;color:var(--muted)">Custom</span>
-        <input type="number" id="thickCustom" min="0" max="1" step="0.005" value="0.125">
-        <select id="thickUnit" style="width:auto">
-          <option value="in">inch</option>
-          <option value="mm">mm</option>
-        </select>
-      </div>
-      <div class="hint" id="thickHint"></div>
+      <div class="hint">Adds a solid <b>1/8&quot; (0.125&quot;)</b> border on every side, so slight miscuts land on the border, not the art. Sized as a true 1/8&quot; relative to each image, so it stays correct at any resolution (about 38px per side on a 300 DPI card).</div>
     </div>
 
     <div class="field" id="colorField">
@@ -140,23 +121,6 @@
       </div>
     </div>
 
-    <div class="field">
-      <span class="cap">Card size (for the resolution &amp; shape check)</span>
-      <select id="cardSize">
-        <option value="2.5x3.5">Standard, 2.5 × 3.5 in (63 × 88 mm)</option>
-        <option value="2.48x3.46">MTG exact, 63 × 88 mm</option>
-        <option value="2.5x3.5b">Bridge / Yu-Gi-Oh! feel, 2.5 × 3.5 in</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <span class="cap">Download format</span>
-      <div class="chips" id="fmtChips">
-        <span class="chip active" data-fmt="png">PNG (lossless)</span>
-        <span class="chip" data-fmt="jpg">JPG (smaller)</span>
-      </div>
-      <div class="hint">PNG is lossless and recommended for print. JPG re-compresses and can soften fine text.</div>
-    </div>
   </aside>
 
   <!-- ===== workspace ===== -->
@@ -200,8 +164,7 @@ const S = {
   borderOn: true,
   borderIn: 0.125,      // inches per side
   color: "#000000",
-  cardW: 2.5, cardH: 3.5,
-  fmt: "png"
+  cardW: 2.5, cardH: 3.5
 };
 let items = [];        // {id, name, img, w, h}
 let seq = 0;
@@ -215,8 +178,6 @@ function effDpi(w, h){ return Math.min(w / S.cardW, h / S.cardH); }
 
 // pixels-per-inch of the source image, based on card width
 function ppi(w){ return w / S.cardW; }
-
-function fmtNum(n){ return (Math.round(n*100)/100).toString(); }
 
 /* build the full-resolution bordered canvas for one item */
 function renderCanvas(it){
@@ -330,12 +291,11 @@ function removeItem(id){ items = items.filter(i => i.id !== id); draw(); }
 /* ---------------- downloads ---------------- */
 function outName(name){
   const base = name.replace(/\.[^.]+$/, "");
-  return base + "-buffer." + (S.fmt === "png" ? "png" : "jpg");
+  return base + "-buffer.png";
 }
-function mime(){ return S.fmt === "png" ? "image/png" : "image/jpeg"; }
 
 function canvasToBlob(canvas){
-  return new Promise(res => canvas.toBlob(res, mime(), 0.95));
+  return new Promise(res => canvas.toBlob(res, "image/png"));
 }
 async function downloadOne(it){
   const {canvas} = renderCanvas(it);
@@ -427,32 +387,7 @@ window.addEventListener("paste", e => { if (e.clipboardData?.files?.length) addF
 window.addEventListener("dragover", e => e.preventDefault());
 window.addEventListener("drop", e => { e.preventDefault(); if (e.target!==drop && e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); });
 
-$("#borderOn").onchange = e => { S.borderOn = e.target.checked; $("#thicknessField").style.opacity = S.borderOn?1:.4; $("#colorField").style.opacity = S.borderOn?1:.4; draw(); };
-
-function setChips(container, fn){
-  container.querySelectorAll(".chip").forEach(ch => ch.onclick = () => {
-    container.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-    ch.classList.add("active"); fn(ch); draw();
-  });
-}
-setChips($("#thickChips"), ch => {
-  S.borderIn = parseFloat(ch.dataset.in);
-  $("#thickUnit").value = "in";
-  $("#thickCustom").value = S.borderIn;
-  updateThickHint();
-});
-$("#thickCustom").oninput = () => {
-  let v = parseFloat($("#thickCustom").value) || 0;
-  if ($("#thickUnit").value === "mm") v = v / 25.4;
-  S.borderIn = v;
-  $("#thickChips").querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-  updateThickHint(); draw();
-};
-$("#thickUnit").onchange = () => { $("#thickCustom").value = $("#thickUnit").value==="mm" ? fmtNum(S.borderIn*25.4) : fmtNum(S.borderIn); updateThickHint(); };
-function updateThickHint(){
-  const px300 = Math.round(S.borderIn * 300);
-  $("#thickHint").textContent = `${fmtNum(S.borderIn)}″ (${fmtNum(S.borderIn*25.4)} mm) ≈ ${px300}px per side at 300 DPI`;
-}
+$("#borderOn").onchange = e => { S.borderOn = e.target.checked; $("#colorField").style.opacity = S.borderOn?1:.4; draw(); };
 
 $("#colorField").querySelectorAll(".chip").forEach(ch => ch.onclick = () => {
   $("#colorField").querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
@@ -467,18 +402,9 @@ $("#colorPick").oninput = () => {
   draw();
 };
 
-$("#cardSize").onchange = e => {
-  const map = { "2.5x3.5":[2.5,3.5], "2.48x3.46":[63/25.4,88/25.4], "2.5x3.5b":[2.5,3.5] };
-  [S.cardW, S.cardH] = map[e.target.value];
-  draw();
-};
-
-setChips($("#fmtChips"), ch => S.fmt = ch.dataset.fmt);
-
 $("#zipBtn").onclick = downloadZip;
 $("#clearBtn").onclick = () => { items = []; draw(); };
 
-updateThickHint();
 $("#ver").textContent = "v1.0";
 draw();
 </script>

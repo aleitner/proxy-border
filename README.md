@@ -1,28 +1,27 @@
 # Proxy Buffer
 
-A tiny, dependency-free web tool that adds a **1/8" black buffer border** to card
-images so they survive cutting when you print proxies. Drag images in, adjust the
-border, download them (individually or as a zip). Everything runs in the browser,
+A tiny, dependency-free web tool that adds a **1/8" black buffer border** to MTG
+card images so they survive cutting when you print proxies. Drag images in,
+download them as PNGs (individually or as a zip). Everything runs in the browser,
 with no upload, no server, no tracking.
 
 Live once you enable GitHub Pages (see below).
 
 ## What it does
 
-- **Drag & drop / browse / paste** any number of card images at once.
-- Adds a solid **buffer border** on all four sides. Default **1/8" (0.125")**, the
-  standard proxy bleed. Also 1/16", 3/16", 1/4", or a custom value in inches or mm.
-- The border is sized as a *true* fraction of an inch relative to your image, so
-  a 1/8" border stays 1/8" whether the source is 750px or 1500px wide.
+- **Drag & drop / browse / paste** any number of MTG card images at once.
+- Adds a solid **1/8" (0.125") buffer border** on all four sides, the standard
+  proxy bleed. Sized as a *true* 1/8" relative to each image, so it stays 1/8"
+  whether the source is 750px or 1500px wide (about 38px per side at 300 DPI).
 - **Border color** (black by default; white or custom).
 - The image itself is never altered. Only the border is added around it.
-- **Checks each image** and flags:
-  - **Resolution**: effective DPI at 2.5×3.5". Under ~200 DPI = blurry (red),
+- **Checks each image** against the standard 2.5 × 3.5" MTG card and flags:
+  - **Resolution**: effective DPI. Under ~200 DPI = blurry (red),
     200 to 299 = soft (amber), 300+ = good, 600+ = excellent.
   - **Card shape**: warns if the aspect ratio isn't ~2.5:3.5 (5:7), or if the
     image looks sideways.
-- **Download** each card, or **Download all as .zip** (zip is built in-browser
-  with a hand-rolled store-only writer, no libraries).
+- **Download** each card as a PNG, or **Download all as .zip** (zip is built
+  in-browser with a hand-rolled store-only writer, no libraries).
 
 ## The numbers it uses
 
@@ -38,10 +37,6 @@ Live once you enable GitHub Pages (see below).
 slightly-off cut trims into the border instead of leaving a white sliver or slicing
 the art. Real Magic cards are black-bordered, so a miscut into black is invisible.
 This is the same idea as "bleed" in print shops and MakePlayingCards uploads.
-
-## Run it locally
-
-Just open `index.html` in any modern browser (double-click it). No build step.
 
 ## Host it on GitHub Pages
 
@@ -59,11 +54,3 @@ Just open `index.html` in any modern browser (double-click it). No build step.
 4. Wait ~1 minute. Your site is at `https://<you>.github.io/proxy-buffer/`.
 
 That's it. A single static file, nothing else to configure.
-
-## Notes / ideas for later
-
-- Card Conjurer (`github.com/Investigamer/cardconjurer`) is a full card *generator*
-  that builds cards from frames; this tool is the opposite end, it just buffers
-  images you already have.
-- Possible additions: a print sheet layout (e.g. 3×3 per page with cut guides)
-  and per-image border overrides.
