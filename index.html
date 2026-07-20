@@ -25,25 +25,26 @@
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
   .panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 12px}
 
-  /* controls */
+  /* --- controls --- */
   .field{margin-bottom:16px}
   .field:last-child{margin-bottom:0}
   label.row{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
-  .field > .cap{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+  .cap{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
   .chip{border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:6px 10px;border-radius:999px;font-size:13px;cursor:pointer;user-select:none}
   .chip.active{background:var(--accent2);border-color:var(--accent2);color:#fff}
-  input[type=number]{width:88px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:7px 9px;font:inherit}
-  input[type=text]{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:7px 9px;font:inherit}
-  select{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:7px 9px;font:inherit;width:100%}
   input[type=color]{width:34px;height:30px;padding:0;border:1px solid var(--line);border-radius:6px;background:var(--panel2)}
+
+  /* toggle switch */
   .switch{position:relative;width:40px;height:23px;flex:0 0 auto}
   .switch input{opacity:0;width:0;height:0}
   .slider{position:absolute;inset:0;background:var(--panel2);border:1px solid var(--line);border-radius:999px;transition:.15s}
   .slider:before{content:"";position:absolute;width:17px;height:17px;left:2px;top:2px;background:#8a93a3;border-radius:50%;transition:.15s}
   .switch input:checked + .slider{background:var(--accent2);border-color:var(--accent2)}
   .switch input:checked + .slider:before{transform:translateX(17px);background:#fff}
-  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+
+  /* buttons */
   .btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:10px 14px;border-radius:9px;font:inherit;cursor:pointer}
   .btn:hover{border-color:var(--accent)}
   .btn.primary{background:var(--accent2);border-color:var(--accent2);color:#fff}
@@ -51,7 +52,7 @@
   .btn[disabled]{opacity:.45;cursor:not-allowed}
   .btnrow{display:flex;gap:10px;flex-wrap:wrap}
 
-  /* drop zone */
+  /* --- drop zone --- */
   #drop{
     border:2px dashed var(--line);border-radius:var(--radius);
     padding:34px 20px;text-align:center;color:var(--muted);
@@ -61,7 +62,7 @@
   #drop strong{color:var(--ink)}
   .kbd{font:12px ui-monospace,Menlo,Consolas,monospace;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
 
-  /* gallery */
+  /* --- card gallery --- */
   .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 12px;flex-wrap:wrap}
   .count{color:var(--muted);font-size:13px}
   #gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
@@ -71,36 +72,39 @@
      display:flex;align-items:center;justify-content:center;padding:14px;min-height:150px}
   .thumbwrap canvas{max-width:100%;height:auto;max-height:280px;box-shadow:0 6px 20px rgba(0,0,0,.45)}
   .meta{padding:11px 12px;font-size:12.5px;display:flex;flex-direction:column;gap:7px}
+  .metahead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
   .fname{color:var(--ink);font-weight:600;word-break:break-word;font-size:13px}
   .stat{display:flex;justify-content:space-between;color:var(--muted)}
   .stat b{color:var(--ink);font-weight:600}
-  .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid transparent;width:fit-content}
+  .badge{display:inline-flex;align-items:center;gap:6px;width:fit-content;font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid transparent}
+  .badge:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:0 0 auto}
   .badge.good{color:var(--good);border-color:#1f5a37;background:#12261a}
   .badge.warn{color:var(--warn);border-color:#5a4a1f;background:#261f12}
   .badge.bad{color:var(--bad);border-color:#5a2422;background:#261414}
+  .badge.note{color:var(--muted);border-color:var(--line);background:var(--panel2)}
   .cardbtns{display:flex;gap:8px;padding:0 12px 12px}
   .cardbtns .btn{flex:1;padding:7px;font-size:12.5px}
   .x{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;border-radius:6px}
   .x:hover{color:var(--bad);background:var(--panel2)}
 
+  .empty{color:var(--muted);text-align:center;padding:40px;font-size:14px}
   details.info{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:4px 16px}
   details.info summary{cursor:pointer;padding:12px 0;color:var(--muted);font-size:13px;list-style:none}
   details.info summary::-webkit-details-marker{display:none}
   details.info[open] summary{color:var(--ink)}
   details.info p{color:var(--muted);font-size:13.5px}
   details.info b{color:var(--ink)}
-  .empty{color:var(--muted);text-align:center;padding:40px;font-size:14px}
   footer{max-width:1200px;margin:0 auto;padding:0 22px 40px;color:var(--muted);font-size:12.5px}
 </style>
 
 <header>
   <h1>🖨️ Proxy Buffer</h1>
-  <p class="sub">Drop card images, add a 1/8&quot; black buffer border for proxy printing, download. Everything runs in your browser, nothing is uploaded.</p>
+  <p class="sub">Drop MTG card images, add a 1/8&quot; black buffer border for proxy printing, download. Everything runs in your browser, nothing is uploaded.</p>
 </header>
 
 <main>
-  <!-- ===== controls ===== -->
-  <aside class="panel" id="controls">
+  <!-- controls -->
+  <aside class="panel">
     <h2>Border settings</h2>
 
     <div class="field">
@@ -109,6 +113,14 @@
         <span class="switch"><input type="checkbox" id="borderOn" checked><span class="slider"></span></span>
       </label>
       <div class="hint">Adds a solid <b>1/8&quot; (0.125&quot;)</b> border on every side, so slight miscuts land on the border, not the art. Sized as a true 1/8&quot; relative to each image, so it stays correct at any resolution (about 38px per side on a 300 DPI card).</div>
+    </div>
+
+    <div class="field">
+      <label class="row">
+        <span>Fill in rounded corners</span>
+        <span class="switch"><input type="checkbox" id="fillCorners" checked><span class="slider"></span></span>
+      </label>
+      <div class="hint">Cards with transparent rounded corners get those corners filled with the border color, so the card prints as a solid rectangle. Turn off to keep the original see-through corners.</div>
     </div>
 
     <div class="field" id="colorField">
@@ -120,10 +132,9 @@
         <input type="color" id="colorPick" value="#000000">
       </div>
     </div>
-
   </aside>
 
-  <!-- ===== workspace ===== -->
+  <!-- workspace -->
   <section>
     <div id="drop">
       <p style="margin:0 0 6px;font-size:16px"><strong>Drag &amp; drop card images here</strong></p>
@@ -145,266 +156,307 @@
     <details class="info">
       <summary>ℹ️ Why a 1/8&quot; black border? (and the numbers this tool uses)</summary>
       <p>Card cutters (guillotines, print shops, or your own hand with a blade) are never perfectly aligned. A solid <b>1/8&quot; (0.125&quot;) buffer</b> on every side means a slightly-off cut trims into the border instead of leaving a white sliver or slicing the art. Real Magic cards are black-bordered, so a miscut into black is invisible.</p>
-      <p><b>Sizes:</b> a card trims to <b>2.5 × 3.5 in</b> (63 × 88 mm), which is <b>750 × 1050 px at 300 DPI</b>, the practical minimum for a crisp print. Add a 1/8&quot; border on each side and the file becomes <b>2.75 × 3.75 in = 825 × 1125 px</b>. This tool sizes the border as a true 1/8&quot; relative to your image, so it stays correct whatever resolution you feed it.</p>
+      <p><b>Sizes:</b> a card trims to <b>2.5 × 3.5 in</b> (63 × 88 mm), which is <b>750 × 1050 px at 300 DPI</b>, the practical minimum for a crisp print. Add a 1/8&quot; border on each side and the file becomes <b>2.75 × 3.75 in = 825 × 1125 px</b>.</p>
       <p><b>Resolution:</b> under ~200 DPI (roughly below 500 px wide) prints blurry; 300 DPI is the baseline; 600 DPI (1500 × 2100) is excellent. Upscaling a small image doesn't add real detail.</p>
-      <p style="font-size:12.5px">Sources: <a href="https://cultureofgaming.com/mtg-proxy-dimensions-guide-exact-card-size-bleed-borders-and-why-is-this-cropped/" target="_blank" rel="noopener">Culture of Gaming</a>, <a href="https://proxyfoundry.com/mtg-proxy-cards-image-dpi-and-resolution-guide-bleed-safe-zones-and-files-that-actually-print/" target="_blank" rel="noopener">Proxy Foundry</a>. Card Conjurer (a full card <i>generator</i>) lives on at <a href="https://github.com/Investigamer/cardconjurer" target="_blank" rel="noopener">github.com/Investigamer/cardconjurer</a>.</p>
+      <p style="font-size:12.5px">Sources: <a href="https://cultureofgaming.com/mtg-proxy-dimensions-guide-exact-card-size-bleed-borders-and-why-is-this-cropped/" target="_blank" rel="noopener">Culture of Gaming</a>, <a href="https://proxyfoundry.com/mtg-proxy-cards-image-dpi-and-resolution-guide-bleed-safe-zones-and-files-that-actually-print/" target="_blank" rel="noopener">Proxy Foundry</a>.</p>
     </details>
   </section>
 </main>
 
-<footer>
-  Proxy Buffer · runs entirely client-side · <span id="ver"></span>
-</footer>
+<footer>Proxy Buffer · runs entirely in your browser</footer>
 
 <script>
 "use strict";
 
-/* ---------------- state ---------------- */
-const S = {
-  borderOn: true,
-  borderIn: 0.125,      // inches per side
-  color: "#000000",
-  cardW: 2.5, cardH: 3.5
-};
-let items = [];        // {id, name, img, w, h}
-let seq = 0;
+// Standard MTG card, in inches. These never change, so they are constants.
+const CARD_W = 2.5;
+const CARD_H = 3.5;
+const CARD_AR = CARD_W / CARD_H;      // width / height (5:7)
+const BORDER_IN = 0.125;              // 1/8" buffer added on every side
 
-/* ---------------- helpers ---------------- */
-const $ = s => document.querySelector(s);
+// Mutable state.
+let items = [];                       // loaded cards: { id, name, img, w, h }
+let borderOn = true;
+let fillCorners = true;
+let borderColor = "#000000";
+let seq = 0;                          // running id counter
+
+const $ = sel => document.querySelector(sel);
 const gallery = $("#gallery");
-const targetAR = () => S.cardW / S.cardH;
 
-function effDpi(w, h){ return Math.min(w / S.cardW, h / S.cardH); }
+// --- Render one card, with its border, onto a fresh canvas ---
+function renderCard(item){
+  const pxPerInch = item.w / CARD_W;                    // treat the image as a full card face
+  const border = borderOn ? Math.round(BORDER_IN * pxPerInch) : 0;
 
-// pixels-per-inch of the source image, based on card width
-function ppi(w){ return w / S.cardW; }
+  const canvas = document.createElement("canvas");
+  canvas.width  = item.w + border * 2;
+  canvas.height = item.h + border * 2;
 
-/* build the full-resolution bordered canvas for one item */
-function renderCanvas(it){
-  const w = it.w, h = it.h;
-  const border = S.borderOn ? Math.round(S.borderIn * ppi(w)) : 0;
-  const cw = w + border*2, ch = h + border*2;
-  const c = document.createElement("canvas");
-  c.width = cw; c.height = ch;
-  const ctx = c.getContext("2d");
-
-  // border fill
-  if (S.borderOn){
-    ctx.fillStyle = S.color;
-    ctx.fillRect(0,0,cw,ch);
+  const ctx = canvas.getContext("2d");
+  if (border || fillCorners){
+    // Paint the border color behind everything. This fills the buffer ring and,
+    // when the card has transparent rounded corners, shows through them too.
+    ctx.fillStyle = borderColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // If we're keeping corners, clear the card area so its transparency survives.
+    if (!fillCorners) ctx.clearRect(border, border, item.w, item.h);
   }
-  // the card image, unchanged. Only the border is added around it
-  ctx.drawImage(it.img, border, border, w, h);
-
-  return {canvas:c, border, cw, ch};
+  ctx.drawImage(item.img, border, border);              // card art, untouched
+  return canvas;
 }
 
-/* resolution + shape assessment for one item */
-function assess(it){
-  const dpi = Math.round(effDpi(it.w, it.h));
-  let res;
-  if (dpi < 200)      res = {cls:"bad",  txt:`${dpi} DPI · too low, will look blurry`};
-  else if (dpi < 300) res = {cls:"warn", txt:`${dpi} DPI · soft, 300+ recommended`};
-  else if (dpi < 600) res = {cls:"good", txt:`${dpi} DPI · good for print`};
-  else                res = {cls:"good", txt:`${dpi} DPI · excellent`};
-
-  const ar = it.w / it.h;
-  const diff = Math.abs(ar - targetAR()) / targetAR();
-  let shape = null;
-  if (ar > 1)              shape = {cls:"warn", txt:"Landscape · card may be sideways"};
-  else if (diff > 0.06)    shape = {cls:"warn", txt:`Off card shape (${ar.toFixed(3)} vs ${targetAR().toFixed(3)})`};
-  return {res, shape};
+// --- Per-card warnings ---
+function printDpi(item){
+  return Math.round(Math.min(item.w / CARD_W, item.h / CARD_H));
+}
+function resolutionBadge(item){
+  const dpi = printDpi(item);
+  if (dpi < 200) return { cls: "bad",  text: `${dpi} DPI · too low, will look blurry` };
+  if (dpi < 300) return { cls: "warn", text: `${dpi} DPI · soft, 300+ recommended` };
+  if (dpi < 600) return { cls: "good", text: `${dpi} DPI · good for print` };
+  return                { cls: "good", text: `${dpi} DPI · excellent` };
+}
+function shapeBadge(item){
+  const ar = item.w / item.h;
+  if (ar > 1) return { cls: "warn", text: "Landscape · card may be sideways" };
+  if (Math.abs(ar - CARD_AR) / CARD_AR > 0.06)
+    return { cls: "warn", text: "Not a standard 2.5 × 3.5 card shape" };
+  return null;                                           // shape looks fine
 }
 
-/* ---------------- rendering the gallery ---------------- */
+// --- Build the gallery from `items` ---
 function draw(){
   gallery.innerHTML = "";
-  for (const it of items){
-    const {canvas, cw, ch} = renderCanvas(it);
-    const {res, shape} = assess(it);
+  for (const item of items){
+    const canvas = renderCard(item);
+    const res = resolutionBadge(item);
+    const shape = shapeBadge(item);
 
-    const el = document.createElement("div");
-    el.className = "card";
-
-    const tw = document.createElement("div");
-    tw.className = "thumbwrap";
-    tw.appendChild(canvas);
-    el.appendChild(tw);
-
-    const meta = document.createElement("div");
-    meta.className = "meta";
-    const outNote = S.borderOn ? `<span class="stat"><span>Output</span><b>${cw} × ${ch}px</b></span>` : "";
-    meta.innerHTML =
-      `<div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
-         <span class="fname">${escapeHtml(it.name)}</span>
-         <button class="x" title="Remove" data-id="${it.id}">×</button>
-       </div>
-       <span class="stat"><span>Source</span><b>${it.w} × ${it.h}px</b></span>
-       ${outNote}
-       <span class="badge ${res.cls}">${dot(res.cls)} ${res.txt}</span>
-       ${shape ? `<span class="badge ${shape.cls}">${dot(shape.cls)} ${shape.txt}</span>` : ""}`;
-    el.appendChild(meta);
-
-    const btns = document.createElement("div");
-    btns.className = "cardbtns";
-    const dl = document.createElement("button");
-    dl.className = "btn"; dl.textContent = "⬇ Download";
-    dl.onclick = () => downloadOne(it);
-    btns.appendChild(dl);
-    el.appendChild(btns);
-
-    el.querySelector(".x").onclick = e => removeItem(e.target.dataset.id);
-    gallery.appendChild(el);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="thumbwrap"></div>
+      <div class="meta">
+        <div class="metahead">
+          <span class="fname">${escapeHtml(item.name)}</span>
+          <button class="x" title="Remove" data-act="remove" data-id="${item.id}">×</button>
+        </div>
+        <span class="stat"><span>Source</span><b>${item.w} × ${item.h}px</b></span>
+        ${borderOn ? `<span class="stat"><span>Output</span><b>${canvas.width} × ${canvas.height}px</b></span>` : ""}
+        <span class="badge ${res.cls}">${res.text}</span>
+        ${shape ? `<span class="badge ${shape.cls}">${shape.text}</span>` : ""}
+        ${item.rounded ? `<span class="badge note">Rounded corners ${fillCorners ? "filled" : "kept"}</span>` : ""}
+      </div>
+      <div class="cardbtns">
+        <button class="btn" data-act="download" data-id="${item.id}">⬇ Download</button>
+      </div>`;
+    card.querySelector(".thumbwrap").appendChild(canvas);
+    gallery.appendChild(card);
   }
-  $("#emptyMsg").style.display = items.length ? "none" : "block";
+
   const n = items.length;
-  $("#count").textContent = n ? `${n} image${n>1?"s":""}` : "No images yet";
+  $("#emptyMsg").style.display = n ? "none" : "block";
+  $("#count").textContent = n ? `${n} image${n > 1 ? "s" : ""}` : "No images yet";
   $("#zipBtn").disabled = !n;
   $("#clearBtn").disabled = !n;
 }
 
-function dot(cls){
-  const c = cls==="good" ? "var(--good)" : cls==="warn" ? "var(--warn)" : "var(--bad)";
-  return `<span style="width:7px;height:7px;border-radius:50%;background:${c};display:inline-block"></span>`;
+function escapeHtml(s){
+  return s.replace(/[&<>"]/g, ch =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
 }
-function escapeHtml(s){ return s.replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m])); }
 
-/* ---------------- files in ---------------- */
-function addFiles(fileList){
-  const files = [...fileList].filter(f => f.type.startsWith("image/"));
-  let pending = files.length;
-  if (!pending) return;
-  for (const f of files){
+// --- Loading dropped / pasted / picked images ---
+function loadImage(file){
+  return new Promise((resolve, reject) => {
     const img = new Image();
-    const url = URL.createObjectURL(f);
-    img.onload = () => {
-      items.push({ id:"i"+(seq++), name:f.name || "pasted.png", img, w:img.naturalWidth, h:img.naturalHeight });
-      URL.revokeObjectURL(url);
-      if (--pending === 0) draw();
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); if (--pending === 0) draw(); };
+    const url = URL.createObjectURL(file);
+    img.onload  = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(); };
     img.src = url;
+  });
+}
+async function addFiles(fileList){
+  for (const file of [...fileList].filter(f => f.type.startsWith("image/"))){
+    try {
+      const img = await loadImage(file);
+      items.push({ id: "c" + seq++, name: file.name || "pasted.png", img,
+                   w: img.naturalWidth, h: img.naturalHeight,
+                   rounded: hasTransparentCorners(img) });
+      draw();                                            // show each card as it loads
+    } catch { /* skip files that fail to decode */ }
   }
 }
-function removeItem(id){ items = items.filter(i => i.id !== id); draw(); }
 
-/* ---------------- downloads ---------------- */
-function outName(name){
-  const base = name.replace(/\.[^.]+$/, "");
-  return base + "-buffer.png";
+// True if any of the image's four corner pixels is transparent (rounded / cut corners).
+function hasTransparentCorners(img){
+  const w = img.naturalWidth, h = img.naturalHeight;
+  const probe = document.createElement("canvas");
+  probe.width = w; probe.height = h;
+  const ctx = probe.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+  return [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]]
+    .some(([x, y]) => ctx.getImageData(x, y, 1, 1).data[3] < 128);
 }
 
-function canvasToBlob(canvas){
-  return new Promise(res => canvas.toBlob(res, "image/png"));
+// --- Downloads ---
+function outputName(name){
+  return name.replace(/\.[^.]+$/, "") + "-buffer.png";
 }
-async function downloadOne(it){
-  const {canvas} = renderCanvas(it);
-  const blob = await canvasToBlob(canvas);
-  saveBlob(blob, outName(it.name));
+function toPng(canvas){
+  return new Promise(resolve => canvas.toBlob(resolve, "image/png"));
 }
-function saveBlob(blob, filename){
+function save(blob, filename){
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
+  a.href = url;
   a.download = filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
-
-async function downloadZip(){
+async function downloadOne(item){
+  save(await toPng(renderCard(item)), outputName(item.name));
+}
+async function downloadAllZip(){
   const btn = $("#zipBtn");
-  btn.disabled = true; const label = btn.textContent; btn.textContent = "Zipping…";
+  const label = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Zipping…";
+
+  const taken = new Set();
   const entries = [];
-  const used = {};
-  for (const it of items){
-    const {canvas} = renderCanvas(it);
-    const blob = await canvasToBlob(canvas);
-    const buf = new Uint8Array(await blob.arrayBuffer());
-    let nm = outName(it.name);
-    if (used[nm]){ used[nm]++; nm = nm.replace(/(\.[^.]+)$/, `-${used[nm]}$1`); } else used[nm] = 1;
-    entries.push({ name:nm, data:buf });
+  for (const item of items){
+    const png = await toPng(renderCard(item));
+    entries.push({ name: uniqueName(outputName(item.name), taken),
+                   data: new Uint8Array(await png.arrayBuffer()) });
   }
-  const zip = buildZip(entries);
-  saveBlob(new Blob([zip], {type:"application/zip"}), "proxy-buffered-cards.zip");
-  btn.textContent = label; btn.disabled = false;
+  save(new Blob([buildZip(entries)], { type: "application/zip" }), "proxy-buffered-cards.zip");
+
+  btn.textContent = label;
+  btn.disabled = false;
+}
+// Avoid two cards with the same name colliding inside the zip.
+function uniqueName(name, taken){
+  let candidate = name, n = 1;
+  while (taken.has(candidate)) candidate = name.replace(/(\.[^.]+)$/, `-${++n}$1`);
+  taken.add(candidate);
+  return candidate;
 }
 
-/* ---------------- minimal store-only ZIP (no dependencies) ---------------- */
-const CRC = (() => {
-  const t = new Uint32Array(256);
-  for (let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = (c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; }
-  return t;
+// --- Minimal store-only ZIP writer (no library needed; PNGs are already compressed) ---
+const CRC_TABLE = (() => {
+  const table = new Uint32Array(256);
+  for (let n = 0; n < 256; n++){
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    table[n] = c >>> 0;
+  }
+  return table;
 })();
-function crc32(u8){
+function crc32(bytes){
   let c = 0xFFFFFFFF;
-  for (let i=0;i<u8.length;i++) c = (c>>>8) ^ CRC[(c ^ u8[i]) & 0xFF];
+  for (let i = 0; i < bytes.length; i++) c = (c >>> 8) ^ CRC_TABLE[(c ^ bytes[i]) & 0xFF];
   return (c ^ 0xFFFFFFFF) >>> 0;
 }
 function buildZip(entries){
   const enc = new TextEncoder();
-  const parts = []; let offset = 0;
-  const push = a => { parts.push(a); offset += a.length; };
-  const u16 = n => new Uint8Array([n&255,(n>>8)&255]);
-  const u32 = n => new Uint8Array([n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]);
-  const records = [];
-  for (const e of entries){
-    const name = enc.encode(e.name);
-    const crc = crc32(e.data);
-    const at = offset;
-    push(u32(0x04034b50)); push(u16(20)); push(u16(0)); push(u16(0));
-    push(u16(0)); push(u16(0));                 // time, date
-    push(u32(crc)); push(u32(e.data.length)); push(u32(e.data.length));
-    push(u16(name.length)); push(u16(0)); push(name);
-    push(e.data);
-    records.push({name, crc, size:e.data.length, at});
-  }
-  const cdStart = offset;
-  for (const r of records){
-    push(u32(0x02014b50)); push(u16(20)); push(u16(20)); push(u16(0)); push(u16(0));
-    push(u16(0)); push(u16(0));
-    push(u32(r.crc)); push(u32(r.size)); push(u32(r.size));
-    push(u16(r.name.length)); push(u16(0)); push(u16(0)); push(u16(0)); push(u16(0));
-    push(u32(0)); push(u32(r.at)); push(r.name);
-  }
-  const cdSize = offset - cdStart;
-  push(u32(0x06054b50)); push(u16(0)); push(u16(0));
-  push(u16(records.length)); push(u16(records.length));
-  push(u32(cdSize)); push(u32(cdStart)); push(u16(0));
+  const parts = [];
+  let offset = 0;
+  const put = chunk => { parts.push(chunk); offset += chunk.length; };
+  const u16 = n => new Uint8Array([n & 255, (n >> 8) & 255]);
+  const u32 = n => new Uint8Array([n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255]);
 
-  const out = new Uint8Array(offset); let o = 0;
-  for (const p of parts){ out.set(p, o); o += p.length; }
-  return out;
+  const central = [];                                    // remember each entry for the directory
+  for (const entry of entries){
+    const name = enc.encode(entry.name);
+    const crc = crc32(entry.data);
+    central.push({ name, crc, size: entry.data.length, at: offset });
+
+    put(u32(0x04034b50));                                // local file header signature
+    put(u16(20)); put(u16(0)); put(u16(0));              // version, flags, method (0 = store)
+    put(u16(0)); put(u16(0));                            // mod time, mod date
+    put(u32(crc)); put(u32(entry.data.length)); put(u32(entry.data.length));
+    put(u16(name.length)); put(u16(0));                  // name length, extra length
+    put(name);
+    put(entry.data);
+  }
+
+  const dirStart = offset;
+  for (const e of central){
+    put(u32(0x02014b50));                                // central directory header signature
+    put(u16(20)); put(u16(20)); put(u16(0)); put(u16(0));// version made by / needed, flags, method
+    put(u16(0)); put(u16(0));                            // mod time, mod date
+    put(u32(e.crc)); put(u32(e.size)); put(u32(e.size));
+    put(u16(e.name.length)); put(u16(0)); put(u16(0));   // name, extra, comment lengths
+    put(u16(0)); put(u16(0)); put(u32(0));               // disk #, internal + external attrs
+    put(u32(e.at));                                      // offset of local header
+    put(e.name);
+  }
+
+  put(u32(0x06054b50));                                  // end of central directory signature
+  put(u16(0)); put(u16(0));                              // disk numbers
+  put(u16(central.length)); put(u16(central.length));    // entry counts
+  put(u32(offset - dirStart)); put(u32(dirStart));       // directory size and offset
+  put(u16(0));                                           // comment length
+
+  const zip = new Uint8Array(offset);
+  let pos = 0;
+  for (const part of parts){ zip.set(part, pos); pos += part.length; }
+  return zip;
 }
 
-/* ---------------- wire up UI ---------------- */
-const drop = $("#drop"), fileInput = $("#fileInput");
-drop.onclick = () => fileInput.click();
+// --- Wire up the UI ---
+const dropZone = $("#drop");
+const fileInput = $("#fileInput");
+
+dropZone.onclick = () => fileInput.click();
 fileInput.onchange = () => { addFiles(fileInput.files); fileInput.value = ""; };
-["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("hot"); }));
-["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); if (ev==="drop"||e.target===drop) drop.classList.remove("hot"); }));
-drop.addEventListener("drop", e => { if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); });
-window.addEventListener("paste", e => { if (e.clipboardData?.files?.length) addFiles(e.clipboardData.files); });
-// allow dropping anywhere on the page too
-window.addEventListener("dragover", e => e.preventDefault());
-window.addEventListener("drop", e => { e.preventDefault(); if (e.target!==drop && e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); });
 
-$("#borderOn").onchange = e => { S.borderOn = e.target.checked; $("#colorField").style.opacity = S.borderOn?1:.4; draw(); };
+dropZone.addEventListener("dragenter", () => dropZone.classList.add("hot"));
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("hot"));
 
-$("#colorField").querySelectorAll(".chip").forEach(ch => ch.onclick = () => {
-  $("#colorField").querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-  ch.classList.add("active");
-  if (ch.dataset.color === "custom"){ S.color = $("#colorPick").value; }
-  else { S.color = ch.dataset.color; $("#colorPick").value = ch.dataset.color; }
-  draw();
+// Accept a drop or paste anywhere on the page, not just inside the dashed box.
+document.addEventListener("dragover", e => e.preventDefault());
+document.addEventListener("drop", e => {
+  e.preventDefault();
+  dropZone.classList.remove("hot");
+  if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
 });
-$("#colorPick").oninput = () => {
-  S.color = $("#colorPick").value;
-  $("#colorField").querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.color==="custom"));
-  draw();
-};
+document.addEventListener("paste", e => {
+  if (e.clipboardData.files.length) addFiles(e.clipboardData.files);
+});
 
-$("#zipBtn").onclick = downloadZip;
+// One delegated handler for every card's remove / download button.
+gallery.addEventListener("click", e => {
+  const btn = e.target.closest("[data-act]");
+  if (!btn) return;
+  const item = items.find(i => i.id === btn.dataset.id);
+  if (!item) return;
+  if (btn.dataset.act === "remove"){ items = items.filter(i => i !== item); draw(); }
+  else if (btn.dataset.act === "download") downloadOne(item);
+});
+
+// Border on/off and corner fill. The color only matters when one of them is on.
+const colorField = $("#colorField");
+function syncColorState(){ colorField.style.opacity = (borderOn || fillCorners) ? 1 : 0.4; }
+$("#borderOn").onchange = e => { borderOn = e.target.checked; syncColorState(); draw(); };
+$("#fillCorners").onchange = e => { fillCorners = e.target.checked; syncColorState(); draw(); };
+
+// Border color: preset chips plus the custom picker.
+const colorChips = document.querySelectorAll("#colorField .chip");
+const colorPick = $("#colorPick");
+function selectColor(choice){                            // choice is a hex string or "custom"
+  if (choice !== "custom") colorPick.value = choice;
+  borderColor = choice === "custom" ? colorPick.value : choice;
+  colorChips.forEach(c => c.classList.toggle("active", c.dataset.color === choice));
+  draw();
+}
+colorChips.forEach(chip => chip.onclick = () => selectColor(chip.dataset.color));
+colorPick.oninput = () => selectColor("custom");
+
+$("#zipBtn").onclick = downloadAllZip;
 $("#clearBtn").onclick = () => { items = []; draw(); };
 
-$("#ver").textContent = "v1.0";
 draw();
 </script>

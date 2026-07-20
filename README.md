@@ -13,8 +13,13 @@ Live once you enable GitHub Pages (see below).
 - Adds a solid **1/8" (0.125") buffer border** on all four sides, the standard
   proxy bleed. Sized as a *true* 1/8" relative to each image, so it stays 1/8"
   whether the source is 750px or 1500px wide (about 38px per side at 300 DPI).
+- **Fill in rounded corners** (on by default): cards with transparent rounded
+  corners get them filled with the border color so the card prints as a solid
+  rectangle. Cards with transparent corners are detected and flagged. Turn it
+  off to keep the original see-through corners.
 - **Border color** (black by default; white or custom).
-- The image itself is never altered. Only the border is added around it.
+- The card art is never touched; the tool only adds the border and, optionally,
+  fills the transparent corners behind the art.
 - **Checks each image** against the standard 2.5 × 3.5" MTG card and flags:
   - **Resolution**: effective DPI. Under ~200 DPI = blurry (red),
     200 to 299 = soft (amber), 300+ = good, 600+ = excellent.
